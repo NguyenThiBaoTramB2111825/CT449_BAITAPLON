@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const ApiError = require('../api-error.js');
 const ProductService = require('../services/product.service.js')
-// const service = require("../services/index.js")
+const service = require("../services/index.js")
 const util = require("../utils/handleImg.js")
 
 exports.getAll = async (req, res, next) => {

@@ -1,25 +1,26 @@
-const PublishingService = require("../services/publishing.service");
-const publishingService = new PublishingService();
+const publishingService = require('../services/publishing.service.js');
+const ApiError = require("../api-error");
+const mongoose = require('mongoose');
+const util = require('../utils/index.js');
 
 exports.create = async (req, res, next) => {
-    if (!req.body?.name) {
-        return next(new ApiError(400, "Name can not be empty"));
-    }
     try {
-        let result = await publishingService.create(req.body);
+        const data = req.body;
+        const isExist = await publishingService.getByEmail(data.email);
+        if (isExist)
+            throw new ApiError(400, "Email is already taken");
+        const result = await publishingService.create(data);
         res.status(201).json({
             message: "Create publisher successfully",
             data: result,
         });
-    } catch (e) {
-        return next(
-            new ApiError(500, "An error occurred while creating the contact")
-        );
+    } catch (err) {
+        next(err);
     }
 };
 
 
-exports.findAll = async (req, res, next) => {
+exports.getAll = async (req, res, next) => {
     try {
         let result = await publishingService.getAll();
         res.status(200).json({
@@ -32,7 +33,7 @@ exports.findAll = async (req, res, next) => {
 };
 
 
-exports.findOne = async (req, res, next ) => {
+exports.getById = async (req, res, next ) => {
     try {
         let result = await publishingService.getById(req.params.id);
         if (!result)
@@ -50,15 +51,17 @@ exports.findOne = async (req, res, next ) => {
 exports.update = async (req, res, next) => {
     try {
         const id = req.params.id;
-        if (!id)
+        if (!(util.isObjectId(id))) {
             throw new ApiError(400, "Publisher id is not valid");
-        let result = await publishingService.update(id, req.body);
+        }
+        const data = req.body;
+        const result = await publishingService.update({id: id, data});
         res.status(200).json({
             message: "Update publisher successfully",
             data: result,
         });
-    } catch (e) {
-        next(e);
+    } catch (err) {
+        next(err);
     }
 };
 

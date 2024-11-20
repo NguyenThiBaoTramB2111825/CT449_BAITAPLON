@@ -6,7 +6,7 @@ const {ObjectId} = require("mongodb");
 class PublishingMiddleware {
     async create(req, res, next) {
         try {
-            const { name, address, books } = req.body;
+            const { name, address, email } = req.body;
 
             if (!address || !name) {
                 return res.status(400).json(new ApiError(400, "Dữ liệu là rỗng"));
@@ -25,7 +25,7 @@ class PublishingMiddleware {
 
     async update(req, res, next) {
         try {
-            const { name, address, books } = req.body;
+            const { name, address, email } = req.body;
             const id = req.params.id;
 
             const publishing = await Publishing.findOne({
@@ -39,7 +39,7 @@ class PublishingMiddleware {
                 return res.status(400).json(new ApiError(400, "Dữ liệu là rỗng"));
             }
 
-            let existPublishing = await Publishing.findOne({ name: name, _id: { $ne: id } });
+            let existPublishing = await Publishing.findOne({ name: name, _id: { $ne: id }, email: email});
             if (existPublishing) {
                 return res.status(409).json(new ApiError(409, `${name} đã tồn tại`));
             }

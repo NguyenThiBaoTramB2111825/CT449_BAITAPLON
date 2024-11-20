@@ -20,12 +20,12 @@ const router = express.Router();
 //     .delete(checkAdmin, publishingController.delete);
 
 router.route("/")
-    .get(publishingController.findAll)
+    .get(publishingController.getAll)
     .post(publishingController.create)
     .delete(publishingController.deleteAll);
 
 router.route("/:id")
-    .get(publishingController.findOne)
+    .get(publishingController.getById)
     .put(publishingController.update)
     .delete(publishingController.delete);
 

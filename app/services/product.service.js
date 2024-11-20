@@ -39,4 +39,4 @@ const ProductService = {
     },
 }
 
-module.exports = ProductService; 
+module.exports = ProductService;

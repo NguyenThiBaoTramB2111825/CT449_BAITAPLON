@@ -1,84 +1,41 @@
-const Publishing = require("../models/Publishing")
+const ApiError = require("../api-error.js");
+const model = require("../models/index")
 
-// const Book = require("../models/Book")
-// const BookService = require("../services/book.service")
-// const bookService = new BookService();
+const PublishingService = {
+    create:  async (user) => {
+        const result = await model.Publishing.create(user);
+        return result;
+    },
 
-const {ObjectId} = require("mongodb");
-class PublishingService{
-    extractPublishingData(payload){
-        const contact={
-            name: payload.name,
-            address: payload.address,
-            books: payload.books,
-        };
-        Object.keys(contact).forEach(
-            (key) => contact[key] === undefined && delete contact[key]
-        );
-        return contact;
-    }
-    extractPublishingCreateData(payload){
-        const contact={
-            name: payload.name,
-            address: payload.address,
-            books: payload.books,
-        };
-        Object.keys(contact).forEach(
-            (key) => contact[key] === undefined && delete contact[key]
-        );
-        return contact;
-    }
-    async create(payload){
-        const {name,address,books} = this.extractPublishingCreateData(payload);
+    getAll: async () => {
+        const result = await model.Publishing.find({});
+        return result;
+    },
 
-        const publishing = new Publishing({
-            name: name,
-            address: address,
-            books: books
-        });
-        await publishing.save();
+    getById : async (id) => {
+        const result = await model.Publishing.findOne({ _id: id });
+        return result;
+    },
 
-        return publishing;
-    }
-    async convertPublishing(payload){
-        let contact = {
-            id: payload.id,
-            name: payload.name,
-            address: payload.Book,
-            books:payload.books
-        }
-        Object.keys(contact).forEach(
-            (key) => contact[key] === undefined && delete contact[key]
-        );
-        return contact;
-    }
-    async getAll() {
-        let results = await Publishing.find({});
-        return await Promise.all(results.map(async (publishing) => {
-            return this.convertPublishing(publishing);
-        }));
-    }
-    async getById(id) {
-        const contact = await Publishing.findById(id);
-        return this.convertPublishing(contact);
-    }
+    getByEmail:  async (email) => {
+        const result = await model.Publishing.findOne({ email: email });
+        return result;
+    },
 
-    async update(id, payload) {
-        const { name, address, books } = this.extractPublishingData(payload);
-        return Publishing.findByIdAndUpdate(id, {
-            name: name,
-            address: address,
-            books: books
-        }, {new: true});
-    }
+    delete: async (id) => {
+        const result = await model.Publishing.deleteOne({ _id: id });
+        return result;
+    },
 
-    async delete(id) {
-        await Book.updateMany({ publishing: id }, { publishing: null });
-        return await Publishing.findByIdAndDelete(id);
-    }
-
-    async deleteAll() {
-        return await Publishing.deleteMany({});
-    }
+    update:  async ({id, data}) => {
+        const isExist = await model.Employee.findOne({_id: id});
+        let result = null;
+        if (!isExist)
+            result = await model.Employee.create(data);
+        else
+            result = await model.Publishing.findOneAndUpdate({ _id: id }, data);
+        return result;
+    },
 }
+
 module.exports = PublishingService

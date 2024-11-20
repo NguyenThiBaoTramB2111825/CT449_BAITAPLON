@@ -1,8 +1,5 @@
 const mongoose = require('mongoose');
 const ApiError = require('../api-error.js');
-// const util = require('../utils/index.js')
-// const service = require("../services/index.js")
-
 const EmployeeService = require("../services/employee.service");
 
 exports.getAll = async (req, res, next) => {

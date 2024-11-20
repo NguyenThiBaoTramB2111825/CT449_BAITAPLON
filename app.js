@@ -15,21 +15,13 @@ app.get("/", (req, res) => {
 });
 
  app.use("/api/contacts", require("./app/routes/contact.route"));
-
-// app.use("/api/auth", require("./app/routes/auth.route"));
-
 app.use("/api/products", require("./app/routes/product.route.js"));
-
-// app.use("/api/authors", require("./app/routes/author.route"));
-
 app.use("/api/publishings", require("./app/routes/publishing.route"));
 
 app.use("/api/employees", require("./app/routes/employees.route"));
 app.use("/api/users", require("./app/routes/user.route.js"));
-
-// app.use("/api/details", require("./app/routes/detail.route"));
-
 app.use("/api/images", require("./app/routes/image.route.js"));
+app.use("/api/tempolist", require("./app/routes/tempolist.route.js"));
 
 
 //Xử lý lỗi 404 response

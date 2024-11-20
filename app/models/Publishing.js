@@ -1,7 +1,9 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
+const validator = require("validator");
 
-const publishingSchema = new Schema(
+
+const PublishingSchema = new mongoose.Schema(
     {
         name: {
             type: String,
@@ -13,18 +15,28 @@ const publishingSchema = new Schema(
             required: true,
             unique: false,
         },
-        books: [{
+        email: {
             type: String,
-            required: true,
-            unique: true,
-            
-            // Tham chiếu đến tài liệu trong colection khác, giống như khóa ngoại
-            // type: Schema.Types.ObjectId,
-            // ref: 'Book'
-        }]
+            unique: [true, "Email is already taken"],
+            required: [true, "Email is required"],
+        }
     },
     { timestamps: true }
     // Chức năng: Tự động thêm hai trường createdAt và updatedAt vào mỗi tài liệu trong collection Publishing.
 );
 
-module.exports = mongoose.model("Publishing", publishingSchema);
+PublishingSchema.path('email').validate({
+    validator: function (value) {
+        if (validator.isEmail(value))
+            return true
+        return false
+
+    },
+    message: function (props) {
+        if (!validator.isEmail(props.value))
+            return "Email is not valid"
+        return "An error has occurred"
+    },
+})
+
+module.exports = mongoose.model("Publishing", PublishingSchema);

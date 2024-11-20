@@ -1,5 +1,4 @@
 const express = require('express');
-// const controller = require('../controllers/index.js');
 const util = require('../utils/index.js');
 const middleware = require('../middlewares/uploadFile.js');
 
